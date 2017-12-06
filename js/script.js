@@ -39,35 +39,48 @@ $.each( cats, function(index, cat) {
         )
     );
     var catElem = $('#' + cat.name);
+    var imgid = cat.name + "-img";
+    var countid = cat.name + "-count";
+    var counterString = 'Your clicks for ' + cat.name + ' so far: ';
     catElem.click(function(e) {
         content.empty();
-        var imgid = cat.name + "-img";
         content.append(
+            $('<div>', {'class': 'row'}).append(
+                $('<h1>', {
+                    'class': 'my-4',
+                    text: 'Here is ' + cat.name
+                })
+            )
+        )
+        .append(
             $('<div>', {'class': 'container'}).append(
                 $('<div>', {
                     'class': 'col-md-8',
                 }).append(   
                     $('<img>', {
-                        'id':  imgid,
+                        id:  imgid,
                         'style': "max-height: 100%; max-width: 100%;",
                         'src': cat.filename
                     })
                 )
             )
-    /*    )
-    .append(
-        $('<div>', {'class': 'counter-container'}).append(
-            $('<h3>', {
-                text: 'You clicked the above picture this many times:'
-            })
         )
         .append(
-            $('<ul>', {
-                'id': counterid,
-                'class': 'click-counter',
-                text: '0'
-            })
-        )*/
-    );
+            $('<div>', {'class': 'row'}).append(
+                $('<h1>', {
+                    id: countid, 
+                    'class': 'my-3',
+                    text: counterString + cat.counter.toString()
+                })
+            )
+        );
+
+        var imgElem = $('#' + imgid);
+        var countElem = $('#' + countid);
+        imgElem.click(function(e) {
+            cat.clicked();
+            countElem.text(counterString + cat.counter.toString());
+        });
     });
+
 });
