@@ -127,128 +127,25 @@ $(function() {
 
     var contentView = {
         init: function() {
+            this.catNameElem = document.getElementById('cat-name');
+            this.catImgElem = document.getElementById('cat-img');
+            this.catCountElem = document.getElementById('cat-count');
+            this.catImgElem.addEventListener('click', function(e) {
+                octopus.selectedCatClicked();
+            });
             contentView.render();
         },
         render: function() {
-            $('#content').empty();
             var catName = octopus.getSelectedCatName();
             var catCount = octopus.getSelectedCatCount();
-            var catImage = octopus.getSelectedCatImage();
-            var imgid = catName + "-img";
-            var countid = catName + "-count";
-            var counterString = 'Your clicks for ' + catName + ' so far: ';
-            $('#content').append(
-                $('<div>', {'class': 'row'}).append(
-                    $('<h1>', {
-                        'class': 'my-4',
-                        text: 'Here is ' + catName
-                    })
-                )
-            )
-            .append(
-                $('<div>', {'class': 'container'}).append(
-                    $('<div>', {
-                        'class': 'col-md-8',
-                    }).append(   
-                        $('<img>', {
-                            id:  imgid,
-                            'style': "max-height: 100%; max-width: 100%;",
-                            'src': catImage 
-                        })
-                    )
-                )
-            )
-            .append(
-                $('<div>', {'class': 'row'}).append(
-                    $('<h1>', {
-                        id: countid, 
-                        'class': 'my-3',
-                        text: counterString + catCount.toString()
-                    })
-                )
-            );
-            var imgElem = $('#' + imgid);
-            var countElem = $('#' + countid);
-            imgElem.click(function(e) {
-                console.log(catName + "image clicked");
-                octopus.selectCat(catName);
-                octopus.selectedCatClicked();
-                countElem.text(counterString + 
-                    octopus.getSelectedCatCount().toString());
-            });
+            var catImg = octopus.getSelectedCatImage();
+            this.catNameElem.textContent = 'Hello! This is ' + catName;
+            this.catCountElem.textContent = 'You clicked ' + catName + ' ' + 
+                catCount.toString() + ' times.';
+            this.catImgElem.src = catImg;
         }
     }
 
     octopus.init();
 });
 
-
-/*var $body = $('body');
-var content = $('#content');
-var sidebar = 
-*/
-
-//initialize
-
-
-//content.empty();
-/*var cats = [{ img: "cat1", counter: "click1" }, 
-    {img: "cat2", counter: "click2" }];
-*/
-/*$.each( localStorage.cats, function(key, cat) {
-    sidebar.append(
-        $('<li>').append(
-            $('<a>', {
-                href: '#',
-                id:  cat.name, 
-                text: cat.name 
-            })
-        )
-    );
-    var catElem = $('#' + cat.name);
-    var imgid = cat.name + "-img";
-    var countid = cat.name + "-count";
-    var counterString = 'Your clicks for ' + cat.name + ' so far: ';
-    catElem.click(function(e) {
-        content.empty();
-        content.append(
-            $('<div>', {'class': 'row'}).append(
-                $('<h1>', {
-                    'class': 'my-4',
-                    text: 'Here is ' + cat.name
-                })
-            )
-        )
-        .append(
-            $('<div>', {'class': 'container'}).append(
-                $('<div>', {
-                    'class': 'col-md-8',
-                }).append(   
-                    $('<img>', {
-                        id:  imgid,
-                        'style': "max-height: 100%; max-width: 100%;",
-                        'src': cat.filename
-                    })
-                )
-            )
-        )
-        .append(
-            $('<div>', {'class': 'row'}).append(
-                $('<h1>', {
-                    id: countid, 
-                    'class': 'my-3',
-                    text: counterString + cat.counter.toString()
-                })
-            )
-        );
-
-        var imgElem = $('#' + imgid);
-        var countElem = $('#' + countid);
-        imgElem.click(function(e) {
-            cat.clicked();
-            countElem.text(counterString + cat.counter.toString());
-        });
-    });
-
-});
-*/
