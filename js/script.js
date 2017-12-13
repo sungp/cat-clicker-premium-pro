@@ -96,15 +96,6 @@ $(function() {
     var sidebarView = {
         init: function() {
             this.sidebarElem = document.getElementById('sidebar');
-            /*octopus.getCatNames().forEach(function(catName) {
-                catElems.set(catName, 
-                    $('<a>', {
-                        href: '#',
-                        id: catName,
-                        text: catName
-                    })
-                );
-            });*/
             sidebarView.render();
         },
         render: function() {
