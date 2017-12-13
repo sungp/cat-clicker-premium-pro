@@ -95,8 +95,8 @@ $(function() {
 
     var sidebarView = {
         init: function() {
-            var catElems = new Map();
-            octopus.getCatNames().forEach(function(catName) {
+            this.sidebarElem = document.getElementById('sidebar');
+            /*octopus.getCatNames().forEach(function(catName) {
                 catElems.set(catName, 
                     $('<a>', {
                         href: '#',
@@ -104,23 +104,26 @@ $(function() {
                         text: catName
                     })
                 );
-            });
-            this.catElems = catElems;
+            });*/
             sidebarView.render();
         },
         render: function() {
             //console.log(this.catElems);
-            var elems = this.catElems;
+            var sidebarElem = this.sidebarElem;
             octopus.getCatNames().forEach(function(catName) {
+                elem = document.createElement('li');
+                catElem = document.createElement('a');
+                catElem.href = '#';
+                catElem.textContent = catName;
                 //console.log(catName);
-                var myElem = elems.get(catName);
-                $('#sidebar').append(
-                    $('<li>').append(myElem)
-                );
-                $('#' + catName).click(function(e) {
-                    console.log(catName + " selected in the view");
-                    octopus.selectCat(catName);
-                });
+                catElem.addEventListener('click', (function(cat) {
+                    return function() {
+                        console.log(cat + " selected in the view");
+                        octopus.selectCat(cat);
+                    };
+                })(catName));
+                elem.appendChild(catElem);
+                sidebarElem.appendChild(elem);
             });
         }
     };
