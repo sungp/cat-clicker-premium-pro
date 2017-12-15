@@ -23,6 +23,7 @@ $(function() {
             localStorage.cats = serializedCats;
             //console.log(serializedCats);
             this.currentlySelected = "Bolly";
+            this.adminMenuToggle = false;
         },
         getCats: function() {
             if (!localStorage.cats) {
@@ -61,6 +62,12 @@ $(function() {
             var cats = new Map(JSON.parse(localStorage.cats));
             //console.log(cats);
             return Array.from(cats.keys());
+        },
+        adminMenuToggled: function() {
+            this.adminMenuToggle = !this.adminMenuToggle;
+        },
+        getAdminMenuToggle: function() {
+            return this.adminMenuToggle;
         }
     };
 
@@ -69,6 +76,7 @@ $(function() {
             model.init();
             sidebarView.init();
             contentView.init();
+            adminView.init();
         },
         selectCat: function(catName) {
             model.selectACat(catName);
@@ -90,6 +98,13 @@ $(function() {
         selectedCatClicked: function() {
             model.selectedCatClicked();
             contentView.render();
+        },
+        adminToggled: function() {
+            model.adminMenuToggled();
+            adminView.render();
+        },
+        getAdminMenuToggle: function() {
+            return model.getAdminMenuToggle();
         }
     };
 
@@ -132,12 +147,38 @@ $(function() {
         render: function() {
             var catName = octopus.getSelectedCatName();
             var catCount = octopus.getSelectedCatCount();
-            var catImg = octopus.getSelectedCatImage();
+            var catImg = 'img/' + octopus.getSelectedCatImage();
             this.catNameElem.textContent = 'Hello! This is ' + catName;
             this.catCountElem.textContent = 'You clicked ' + catName + ' ' + 
                 catCount.toString() + ' times.';
             this.catImgElem.src = catImg;
         }
+    }
+
+    var adminView = {
+        init: function() {
+            this.adminToggleElem = document.getElementById('admin-toggle');
+            this.adminMenuElem = document.getElementById('admin-menu');
+            this.nameInputElem = document.getElementById('name-input');
+            this.imgInputElem = document.getElementById('img-input');
+            this.countInputElem = document.getElementById('count-input');
+            this.menuCancelElem = document.getElementById('menu-cancel');
+            this.menuSaveElem = document.getElementById('menu-save');
+            this.adminToggleElem.addEventListener('click', function(e) {
+                octopus.adminToggled();
+            });
+            adminView.render();
+        },
+        
+        render: function() {
+            if (!octopus.getAdminMenuToggle()) {
+                this.adminMenuElem.style.display = 'none';
+                return;
+            }
+            this.adminMenuElem.style.display = 'block';
+            
+        }
+        
     }
 
     octopus.init();
