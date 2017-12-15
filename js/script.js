@@ -82,6 +82,7 @@ $(function() {
             model.selectACat(catName);
             contentView.render();
             console.log(catName + " selected");
+            adminView.render();
         },
         getCatNames: function() {
             return model.cats();
@@ -167,6 +168,9 @@ $(function() {
             this.adminToggleElem.addEventListener('click', function(e) {
                 octopus.adminToggled();
             });
+            this.menuCancelElem.addEventListener('click', function(e) {
+                adminView.render();
+            });
             adminView.render();
         },
         
@@ -175,6 +179,12 @@ $(function() {
                 this.adminMenuElem.style.display = 'none';
                 return;
             }
+            var catName = octopus.getSelectedCatName();
+            var catCount = octopus.getSelectedCatCount();
+            var catImg = 'img/' + octopus.getSelectedCatImage();
+            this.nameInputElem.value = catName;
+            this.countInputElem.value = catCount;
+            this.imgInputElem.value = catImg;
             this.adminMenuElem.style.display = 'block';
             
         }
