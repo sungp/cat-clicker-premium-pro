@@ -13,11 +13,11 @@ $(function() {
     var model = {
         init: function() {
             var cats = new Map();
-            cats.set("Bolly", new Cat("Bolly", 0, "cat1.jpg"));
-            cats.set("Dolly", new Cat("Dolly", 0, "cat2.jpg"));
-            cats.set("Folly", new Cat("Folly", 0, "cat3.jpg"));
-            cats.set("Golly", new Cat("Golly", 0, "cat4.jpg"));
-            cats.set("Molly", new Cat("Molly", 0, "cat5.jpg"));
+            cats.set("Bolly", new Cat("Bolly", 0, "img/cat1.jpg"));
+            cats.set("Dolly", new Cat("Dolly", 0, "img/cat2.jpg"));
+            cats.set("Folly", new Cat("Folly", 0, "img/cat3.jpg"));
+            cats.set("Golly", new Cat("Golly", 0, "img/cat4.jpg"));
+            cats.set("Molly", new Cat("Molly", 0, "img/cat5.jpg"));
             //console.log(cats);
             var serializedCats = JSON.stringify(Array.from(cats.entries())); 
             localStorage.cats = serializedCats;
@@ -68,6 +68,14 @@ $(function() {
         },
         getAdminMenuToggle: function() {
             return this.adminMenuToggle;
+        },
+        updateSelectedCat: function(catName, img, count) {
+            var cats = this.getCats();
+            var catObj = cats.delete(this.currentlySelected);
+            var cat = new Cat(catName, count, img);
+            cats.set(catName, cat);
+            this.setCats(cats);
+            this.selectACat(catName);
         }
     };
 
@@ -106,20 +114,35 @@ $(function() {
         },
         getAdminMenuToggle: function() {
             return model.getAdminMenuToggle();
+        },
+        updateCat: function(catName, img, count) {
+            model.updateSelectedCat(catName, img, count);
+            sidebarView.render();
+            contentView.render();
+            adminView.render();
         }
     };
 
     var sidebarView = {
         init: function() {
-            this.sidebarElem = document.getElementById('sidebar');
+            this.sidebarElem = document.getElementById('sidebar-view');
             sidebarView.render();
         },
         render: function() {
             //console.log(this.catElems);
-            var sidebarElem = this.sidebarElem;
+            this.sidebarElem.innerHTML = '';
+           
+            var titleElem = document.createElement('a');
+            titleElem.href = '#';
+            titleElem.textContent = 'Here are your Cats';
+            var brandElem = document.createElement('li');
+            brandElem.classList.add('sidebar-brand');
+            brandElem.appendChild(titleElem);
+            this.sidebarElem.appendChild(brandElem);
+            var sidebar = this.sidebarElem;
             octopus.getCatNames().forEach(function(catName) {
-                elem = document.createElement('li');
-                catElem = document.createElement('a');
+                var elem = document.createElement('li');
+                var catElem = document.createElement('a');
                 catElem.href = '#';
                 catElem.textContent = catName;
                 //console.log(catName);
@@ -130,13 +153,14 @@ $(function() {
                     };
                 })(catName));
                 elem.appendChild(catElem);
-                sidebarElem.appendChild(elem);
+                sidebar.appendChild(elem);
             });
         }
     };
 
     var contentView = {
         init: function() {
+            this.contentElem = document.getElementById('content');
             this.catNameElem = document.getElementById('cat-name');
             this.catImgElem = document.getElementById('cat-img');
             this.catCountElem = document.getElementById('cat-count');
@@ -146,9 +170,10 @@ $(function() {
             contentView.render();
         },
         render: function() {
+            this.contentElem.innerHtml = '';
             var catName = octopus.getSelectedCatName();
             var catCount = octopus.getSelectedCatCount();
-            var catImg = 'img/' + octopus.getSelectedCatImage();
+            var catImg = octopus.getSelectedCatImage();
             this.catNameElem.textContent = 'Hello! This is ' + catName;
             this.catCountElem.textContent = 'You clicked ' + catName + ' ' + 
                 catCount.toString() + ' times.';
@@ -171,6 +196,11 @@ $(function() {
             this.menuCancelElem.addEventListener('click', function(e) {
                 adminView.render();
             });
+            this.menuSaveElem.addEventListener('click', (function(nameInput, imgInput, countInput) {
+                return function() {
+                    octopus.updateCat(nameInput.value, imgInput.value, parseInt(countInput.value));
+                } 
+            })(this.nameInputElem, this.imgInputElem, this.countInputElem));
             adminView.render();
         },
         
@@ -181,7 +211,7 @@ $(function() {
             }
             var catName = octopus.getSelectedCatName();
             var catCount = octopus.getSelectedCatCount();
-            var catImg = 'img/' + octopus.getSelectedCatImage();
+            var catImg = octopus.getSelectedCatImage();
             this.nameInputElem.value = catName;
             this.countInputElem.value = catCount;
             this.imgInputElem.value = catImg;
